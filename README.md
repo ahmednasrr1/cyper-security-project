@@ -63,6 +63,4 @@ Tools Used
 	•	Gobuster and Dirb: For URL enumeration.
 	•	OWASP ZAP: For scanning and XSS payload injection.
 
-Useful Links
-	•	OWASP Juice Shop
-	•	Kali Linux
+
