@@ -1,0 +1,68 @@
+Web Penetration Testing Report for OWASP Juice Shop
+Executive Summary
+Purpose of the Test and Brief Overview of Key Findings
+The purpose of this penetration test is to assess the security posture of the OWASP Juice Shop application by identifying vulnerabilities in its web application. Key findings include:
+
+Identification of the admin path through enumeration.
+Successful brute-force attack on admin credentials.
+Cross-Site Scripting (XSS) vulnerability in the product search feature.
+High-Level Impact and Critical Vulnerabilities
+Admin Path Enumeration: The application exposes an unsecured admin path that can be discovered by an attacker.
+Brute Force on Admin Credentials: The admin login page can be brute-forced due to weak password policies.
+XSS in Product Search: The search input does not sanitize user input, allowing attackers to inject malicious scripts.
+Summary of Recommendations
+Implement strong authentication mechanisms and rate-limiting for the admin login.
+Apply input sanitization and validation to prevent XSS attacks.
+Secure the admin panel by restricting access based on IP or roles.
+Scope and Methodology
+Scope
+The scope of this test includes the OWASP Juice Shop web application (hosted locally).
+
+Approach
+Testing Approach: Black-box testing, where no prior knowledge of the system was provided. We treated the application as an external attacker would.
+Tools Used
+Burp Suite: For intercepting and manipulating HTTP requests.
+Gobuster: For directory brute-forcing to find hidden admin paths.
+OWASP ZAP: Used to identify common vulnerabilities such as XSS.
+Firefox: For manual testing and exploitation.
+Vulnerability Findings
+Critical Vulnerabilities
+1. Admin Path Enumeration
+Description: The admin panel can be discovered using a brute-force directory search tool (Gobuster) to find hidden paths.
+Risk: High, as attackers could find and access sensitive admin functionality.
+Potential Impact: Unauthorized access to the admin panel, leading to potential data manipulation or account compromises.
+Evidence:
+Screenshot of Gobuster output showing the /admin path.
+HTTP response with a 200 OK status for /admin.
+Remediation: Restrict access to admin paths using IP whitelisting or proper access control mechanisms.
+2. Brute Force on Admin Credentials
+Description: Weak login functionality for the admin panel allows brute-force attempts on the admin credentials.
+Risk: High, as attackers can guess the admin credentials through repeated login attempts.
+Potential Impact: Complete compromise of the admin account.
+Evidence:
+Screenshot of Burp Suite showing multiple failed login attempts with a dictionary wordlist.
+Access to the admin panel after successful login.
+Remediation: Implement strong passwords, CAPTCHA, or rate-limiting to prevent brute-force attacks.
+3. Cross-Site Scripting (XSS) in Product Search
+Description: The product search input does not sanitize user input, allowing for the execution of malicious JavaScript.
+Risk: Medium, as this could allow attackers to steal cookies or perform actions on behalf of users.
+Potential Impact: User data theft or unauthorized actions on behalf of a logged-in user.
+Evidence:
+Screenshot showing the injected XSS payload in the product search input and the resulting script execution.
+Proof of concept code that injects the script.
+Remediation: Implement input sanitization and encoding to prevent script execution in user inputs.
+Exploitation and Attack Simulation
+Tools and Techniques Used for Exploitation
+Gobuster was used to discover hidden directories and admin paths.
+Burp Suite was used for intercepting and analyzing HTTP requests, followed by brute-forcing admin credentials using a dictionary attack.
+OWASP ZAP was used for identifying and exploiting the XSS vulnerability in the product search field.
+Outcome and Impact of the Attack
+Successfully identified the admin panel and gained access after brute-forcing the credentials.
+Demonstrated a working XSS attack by injecting a script into the product search input, which executed when viewed by a user.
+Conclusion
+Summary of Security Posture Based on Findings
+The OWASP Juice Shop web application is vulnerable to a variety of common attacks, including brute-forcing admin credentials, discovering sensitive admin paths through enumeration, and Cross-Site Scripting in user inputs.
+
+Overall Risk Level and Next Steps for Remediation
+Overall Risk Level: High, due to the ease with which the admin credentials can be brute-forced and the potential impact of XSS.
+Next Steps: Immediate remediation actions include implementing strong password policies, rate-limiting login attempts, securing admin paths, and applying proper input validation to prevent XSS.
