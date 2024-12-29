@@ -1,0 +1,69 @@
+Enumeration to Find Admin Path
+Objective
+The goal of this attack was to find the admin login path for the OWASP Juice-Shop application and exploit it using an SQL Injection attack to log in as the admin. The focus was on identifying the login path and then testing the login form for vulnerabilities.
+
+Tools Used
+Burp Suite: A web vulnerability scanner and proxy tool used for intercepting requests, manipulating them, and performing SQL injection attacks on the login form.
+Firefox: Used for browsing the Juice-Shop application and sending the login request through Burp Suite for interception.
+Gobuster: A directory brute-forcing tool to enumerate hidden paths on the server.
+Dirb: Another directory scanner used to identify admin paths by brute-forcing directories.
+Methodology
+1. Enumerating Admin Paths with Gobuster or Dirb
+Before intercepting the login request, I needed to find the admin path. This was achieved by performing directory enumeration using Gobuster or Dirb.
+
+Gobuster Approach
+Gobuster is a powerful tool that can quickly brute-force directories and files on a web server. The following command was used to scan the Juice-Shop server for hidden paths:
+
+gobuster dir -u http://localhost:3000 -w /usr![Screenshot 2024-12-27 131006](https://github.com/user-attachments/assets/a3b44701-e886-4b61-96f8-29248a7b3f8c)
+/share/wordlists/dirbuster/directory-list-2.3-medium.txt --exclude-length 3748 -t 5
+-u http://localhost:3000: URL of the target application.
+-w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt: The wordlist used for brute-forcing.
+--exclude-length 3748: This excludes responses of a certain size (common error page length), minimizing false positives.
+-t 5: Number of threads to run concurrently (5 threads to avoid overloading the server).
+Dirb Approach
+Alternatively, Dirb can achieve similar results. The following command was used to identify hidden paths:
+
+dirb http://localhost:3000 /usr/share/wordlists/dirb/common.txt
+http://localhost:3000: URL of the target application.
+/usr/share/wordlists/dirb/common.txt: Default wordlist used by Dirb for scanning.
+Outcome: Both tools discovered the /admin path, revealing the location of the login panel.
+
+2. Intercepting the Login Request
+To begin, I launched Burp Suite and configured it to intercept traffic between Firefox and the OWASP Juice-Shop application. I used Firefox to navigate to the Juice-Shop login page and entered a random username and password to trigger a login attempt.
+
+3. Manipulating the Request with Burp Suite
+Once the login request was intercepted, I noticed that the login form sent a POST request to the server. The request contained parameters for the username and password fields, such as:
+
+username=admin&password=password123
+I modified the password parameter with the following SQL Injection payload:
+
+' OR '1'='1'; --
+This SQL Injection payload works by manipulating the SQL query on the server side to always evaluate as TRUE for the username and password check, thereby bypassing authentication.
+
+' OR '1'='1': Forces the SQL query to always return true.
+--: Comments out the rest of the query, ensuring no errors are triggered.
+4. Sending the Modified Request
+After modifying the password parameter, I sent the altered request to the server using Burp Suite's "Forward" button.
+
+5. Accessing the Admin Panel
+The request was successfully processed, and I was logged in as the admin. Upon logging in, I was redirected to the admin dashboard of the Juice-Shop application.
+
+The login path was confirmed as http://localhost:3000/#/administration.
+I was able to access the administrative functionalities, proving the success of the attack.
+Evidence
+Here are the key pieces of evidence collected during the enumeration process:
+
+Burp Suite Intercepted Request showing the SQL Injection payload being injected into the password field: Burp Suite Intercepted Request
+(Example screenshot showing Burp Suite's intercepted POST request with SQL Injection payload.)
+
+Successful Login as Admin
+After sending the modified request, I was logged in as the admin and was redirected to the admin dashboard.
+Admin Dashboard
+(Example screenshot showing the admin dashboard after successful login.)
+
+Outcome
+The login path /admin was successfully identified, and the SQL Injection attack on the login form allowed me to bypass authentication and gain access as an admin user. This demonstrates a critical vulnerability in the authentication process, allowing unauthorized access to the admin area.
+
+Conclusion and Next Steps
+The successful exploitation of the login form with SQL Injection highlights a significant security flaw that needs to be addressed.
+The next step involves attempting further attacks or looking into other security flaws within the Juice-Shop application, such as brute-forcing credentials or exploring other attack vectors.
