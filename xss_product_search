@@ -1,0 +1,12 @@
+XSS in Product Search
+Objective
+The goal of this attack was to identify and exploit a Cross-Site Scripting (XSS) vulnerability in the Product Search functionality of the OWASP Juice-Shop application. By injecting a malicious payload into the search bar, I was able to trigger an alert box, demonstrating the vulnerability.
+
+Tools Used
+Web Browser (Firefox): Used for interacting with the Juice-Shop application and triggering the XSS attack via the product search bar.
+Methodology
+1. Identifying the Vulnerability
+I first accessed the Product Search functionality of the Juice-Shop application. This feature allows users to search for products in the store by entering search terms in a search bar.
+
+2. Injecting the XSS Payload
+In the search bar, I inserted the following XSS payload:
